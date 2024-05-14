@@ -4,6 +4,7 @@ var cors = require('cors');
 const { connectDB } = require('./database/connection');
 
 const UserRoutes = require('./routes/UserRoutes')
+const InvestorRoutes = require('./routes/InvestorRoutes')
 
 require('dotenv').config()
 
@@ -24,6 +25,7 @@ app.get('/health', (req, res) => {
 })
 
 app.use("/api/user", UserRoutes) // User API
+app.use("/api/investor", InvestorRoutes) // Investor API
 
 connectDB()
 

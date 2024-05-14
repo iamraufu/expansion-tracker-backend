@@ -9,7 +9,8 @@ const {
     getOneInvestor
 } = require('../controllers/InvestorController')
 
-
 router.post('/register', registerInvestor) // Create investor
 router.post('/', getAllInvestors) // get all
-router.get('/:id', getOneInvestor) // get one   
+router.get('/:id', getOneInvestor) // get one
+
+module.exports = router
