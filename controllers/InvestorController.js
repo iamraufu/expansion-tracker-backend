@@ -1,8 +1,25 @@
 const InvestorModel = require("../models/InvestorModel");
 const mongoose = require("mongoose");
 
+
+const generateCustomId = async () => {
+  try {
+    // Find the count of existing investors
+    const count = await InvestorModel.countDocuments();
+
+    // Generate the custom ID based on the count
+    const customId = `INV${String(count + 1).padStart(4, '0')}`;
+
+    return customId;
+  } catch (error) {
+    console.error('Error generating custom ID:', error);
+    throw error;
+  }
+};
+
 // Register a new investor
 const registerInvestor = async (req, res) => {
+
 
   try {
 
@@ -10,7 +27,13 @@ const registerInvestor = async (req, res) => {
     const investor = Boolean(await InvestorModel.findOne({ phone }));
 
     if (!investor) {
-      let newInvestor = await InvestorModel.create(req.body);
+      // Generate custom ID
+      const customId = await generateCustomId();
+
+      console.log(customId);
+      
+      // Create new investor with custom ID
+      const newInvestor = await InvestorModel.create({ ...req.body, customId });
 
       return res.status(201).send({
         status: true,
@@ -28,6 +51,7 @@ const registerInvestor = async (req, res) => {
   }
 
   catch (err) {
+    console.log(err);
     res.send({
       status: false,
       message: `Error in registration : ${err}`,
@@ -43,6 +67,7 @@ const getAllInvestors = async (req, res) => {
   }
 
   catch (err) {
+    console.log(err);
     res.status(500).json({
       status: false,
       message: `${err}`,
@@ -60,9 +85,9 @@ const search = async (req, res) => {
       path: "createdBy",
       select: " -password",
     })
-    .populate({
-      path: "sites",
-    });
+    // .populate({
+    //   path: "sites",
+    // });
 
   const responseObject = {
     status: true,
@@ -181,7 +206,45 @@ const updateInvestor = async (req, res) => {
   }
 }
 
+
+// Register a new investor
+const registerLandlord = async (req, res) => {
+  console.log(req.body);
+
+    try {
+
+      const { phone } = req.body;
+      const landlord = Boolean(await LandlordModel.findOne({ phone }));
+
+      if (!landlord) {
+        let newLandlord = await LandlordModel.create(req.body);
+
+        return res.status(201).send({
+          status: true,
+          message: "landlord created successfully!",
+          landlord: newLandlord,
+        });
+      }
+
+      else {
+        return res.status(409).send({
+          status: false,
+          message: `Landlord exist with ${phone}`,
+        });
+      }
+    }
+
+    catch (err) {
+      console.log(err);
+      res.send({
+        status: false,
+        message: `Error in registration : ${err}`,
+      });
+    }
+};
+
 module.exports = {
+  registerLandlord,
   registerInvestor,
   getAllInvestors,
   getOneInvestor,

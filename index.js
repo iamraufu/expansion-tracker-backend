@@ -5,6 +5,8 @@ const { connectDB } = require('./database/connection');
 
 const UserRoutes = require('./routes/UserRoutes')
 const InvestorRoutes = require('./routes/InvestorRoutes')
+const LandlordRoutes = require('./routes/LandlordRoutes')
+const ServicesRoute = require('./routes/ServicesRoute')
 
 require('dotenv').config()
 
@@ -26,6 +28,8 @@ app.get('/health', (req, res) => {
 
 app.use("/api/user", UserRoutes) // User API
 app.use("/api/investor", InvestorRoutes) // Investor API
+app.use("/api/landlord", LandlordRoutes) // Landlord API
+app.use("/api/services", ServicesRoute) // services API
 
 connectDB()
 

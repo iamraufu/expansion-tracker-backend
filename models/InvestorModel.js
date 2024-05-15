@@ -6,6 +6,10 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    type: {
+      type: String,
+      default: "investor"
+    },
     name: {
       type: String,
       required: true
@@ -57,19 +61,19 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    thana: {
-      type: String,
-      required: true
-    },
+    // thana: {
+    //   type: String,
+    //   required: true
+    // },
     address: {
       type: String,
       required: true
     },
     location: {
-      lon: {
+      longitude: {
         type: Number
       },
-      lat: {
+      latitude: {
         type: Number
       },
     },
