@@ -112,6 +112,8 @@ const getOneInvestor = async (req, res) => {
 
   const { id } = req.params;
 
+  // console.log(id);
+
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({
@@ -126,9 +128,9 @@ const getOneInvestor = async (req, res) => {
         path: "createdBy",
         select: " -password",
       })
-      .populate({
-        path: "sites",
-      });
+      // .populate({
+      //   path: "sites",
+      // });
 
     foundInvestor = {
       ...foundInvestor,
@@ -148,6 +150,7 @@ const getOneInvestor = async (req, res) => {
   }
 
   catch (err) {
+    console.log(err);
     res.status(500).json({
       status: false,
       message: `${err}`,

@@ -318,10 +318,18 @@ const search = async (req, res) => {
       }
 }
 
+const alive = async (req,res) => {
+      res.status(200).json({
+            status: true,
+            message: "Staying Alive"
+      })
+}
+
 module.exports = {
       register,
       login,
       users,
       user,
-      update
+      update,
+      alive
 }

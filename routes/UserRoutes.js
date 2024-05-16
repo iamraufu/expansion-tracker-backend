@@ -8,9 +8,11 @@ const {
       login,
       users,
       user,
-      update
+      update,
+      alive
 } = require('../controllers/UserController')
 
+router.get('/alive', alive) // Create an user
 router.post('/register', register) // Create an user
 router.post('/login', login) // Login
 router.post('/', tokenVerify, users) // Get all users
