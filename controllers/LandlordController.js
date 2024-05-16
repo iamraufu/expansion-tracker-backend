@@ -16,7 +16,7 @@ const generateCustomId = async () => {
   }
 };
 
-// Register a new investor
+// Register a new landlord
 const registerLandlord = async (req, res) => {
   console.log(req.body);
 
@@ -51,7 +51,7 @@ const registerLandlord = async (req, res) => {
   }
 };
 
-// GET all investors
+// GET all landlords
 const getAllLandlords = async (req, res) => {
   try {
     await search(req, res);
@@ -91,7 +91,7 @@ const search = async (req, res) => {
   }
 };
 
-// GET investor by Id
+// GET landlord by Id
 const getOneLandlord = async (req, res) => {
   const { id } = req.params;
 
@@ -133,7 +133,7 @@ const getOneLandlord = async (req, res) => {
     });
   }
 };
-// Update investor by Id
+// Update landlord by Id
 const updateLandlord = async (req, res) => {
   const { id } = req.params;
 

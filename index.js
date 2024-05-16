@@ -7,6 +7,7 @@ const UserRoutes = require('./routes/UserRoutes')
 const InvestorRoutes = require('./routes/InvestorRoutes')
 const LandlordRoutes = require('./routes/LandlordRoutes')
 const ServicesRoute = require('./routes/ServicesRoute')
+const SiteRoutes = require('./routes/SiteRoutes')
 
 require('dotenv').config()
 
@@ -30,6 +31,7 @@ app.use("/api/user", UserRoutes) // User API
 app.use("/api/investor", InvestorRoutes) // Investor API
 app.use("/api/landlord", LandlordRoutes) // Landlord API
 app.use("/api/services", ServicesRoute) // services API
+app.use("/api/site", SiteRoutes) // services API
 
 connectDB()
 

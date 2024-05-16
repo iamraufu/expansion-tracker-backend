@@ -61,10 +61,7 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    // thana: {
-    //   type: String,
-    //   required: true
-    // },
+
     address: {
       type: String,
       required: true
@@ -79,7 +76,7 @@ const investorSchema = new mongoose.Schema(
     },
     sites: {
       type: Array,
-      Of: mongoose.Types.ObjectId, // array of strings that represent the manager a user have
+      Of: mongoose.Types.ObjectId, 
       ref: "Site",
       default: [],
     },
@@ -87,6 +84,7 @@ const investorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
+    
     isDeleted: {
       type: Boolean,
       default: false

@@ -210,44 +210,7 @@ const updateInvestor = async (req, res) => {
 }
 
 
-// Register a new investor
-const registerLandlord = async (req, res) => {
-  console.log(req.body);
-
-    try {
-
-      const { phone } = req.body;
-      const landlord = Boolean(await LandlordModel.findOne({ phone }));
-
-      if (!landlord) {
-        let newLandlord = await LandlordModel.create(req.body);
-
-        return res.status(201).send({
-          status: true,
-          message: "landlord created successfully!",
-          landlord: newLandlord,
-        });
-      }
-
-      else {
-        return res.status(409).send({
-          status: false,
-          message: `Landlord exist with ${phone}`,
-        });
-      }
-    }
-
-    catch (err) {
-      console.log(err);
-      res.send({
-        status: false,
-        message: `Error in registration : ${err}`,
-      });
-    }
-};
-
 module.exports = {
-  registerLandlord,
   registerInvestor,
   getAllInvestors,
   getOneInvestor,
