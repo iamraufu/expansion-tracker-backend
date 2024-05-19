@@ -52,17 +52,18 @@ const login = async (req, res) => {
       try {
             const { email, password } = req.body
             const user = await UserModel.findOne({ email: email.trim() })
-            const userWithoutPassword = await UserModel.findOne({ email: email.trim() }).select(" -password").populate(
-                  {
-                        path: 'managers',
-                        select: " -password"
-                  }
-            ).populate(
-                  {
-                        path: 'employees',
-                        select: " -password"
-                  }
-            )
+            const userWithoutPassword = await UserModel.findOne({ email: email.trim() }).select(" -password")
+            // .populate(
+            //       {
+            //             path: 'managers',
+            //             select: " -password"
+            //       }
+            // ).populate(
+            //       {
+            //             path: 'employees',
+            //             select: " -password"
+            //       }
+            // )
             const userExist = Boolean(user)
 
             if (!userExist) {
@@ -133,7 +134,8 @@ const user = async (req, res) => {
                   })
             }
 
-            let foundUser = await UserModel.findById(id).select(" -password").lean().populate(
+            let foundUser = await UserModel.findById(id).select(" -password").lean()
+            .populate(
                   {
                         path: 'managers',
                         select: " -password"
