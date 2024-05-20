@@ -23,11 +23,9 @@ const search = async (req, res) => {
     .lean()
     .populate({
       path: "landlords",
-
     })
     .populate({
       path: "investors.investorId",
-
     })
     .populate({
       path: "createdBy",
@@ -70,7 +68,6 @@ const registerSite = async (req, res) => {
 
       // Create new site with custom ID
       const newSite = await SiteModal.create({ ...req.body, customId });
-      
 
       return res.status(201).send({
         status: true,
@@ -123,17 +120,14 @@ const getOneSite = async (req, res) => {
     let foundSite = await SiteModal.findById(id)
       .lean()
       .populate({
-        path: "landLords",
-        model: "Landlord",
+        path: "landlords",
       })
       .populate({
         path: "investors.investorId",
-        model: "Investor",
       })
       .populate({
         path: "createdBy",
         select: "-password",
-        model: "User",
       })
       .exec();
     // .populate({
