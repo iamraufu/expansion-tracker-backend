@@ -10,8 +10,9 @@ const investorAndLandlordData = async (req, res) => {
   const filter = req.body
 
   try {
-    const investors = await InvestorModel.find({filter});
-    const landlords = await LandlordModel.find({filter});
+    const investors = await InvestorModel.find(filter);
+    const landlords = await LandlordModel.find(filter);
+    
 
     const combinedData = [...investors, ...landlords];
 
