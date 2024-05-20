@@ -94,6 +94,7 @@ const registerSite = async (req, res) => {
 
 // GET all sites
 const getAllSites = async (req, res) => {
+  console.log(req.body);
   try {
     await search(req, res);
   } catch (err) {

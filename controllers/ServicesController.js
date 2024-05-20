@@ -7,9 +7,11 @@ const LandlordModel = require('../models/LandlordModel');
 const investorAndLandlordData = async (req, res) => {
   console.log(req.body);
 
+  const filter = req.body
+
   try {
-    const investors = await InvestorModel.find(req.body);
-    const landlords = await LandlordModel.find(req.body);
+    const investors = await InvestorModel.find({filter});
+    const landlords = await LandlordModel.find({filter});
 
     const combinedData = [...investors, ...landlords];
 
