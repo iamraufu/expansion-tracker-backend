@@ -1,4 +1,4 @@
-const SiteModal = require("../models/SiteModal");
+const SiteModal = require("../models/SiteModel");
 const mongoose = require("mongoose");
 
 const generateCustomId = async () => {
@@ -175,33 +175,21 @@ const updateSite = async (req, res) => {
     if (!siteExist) {
       return res.status(401).json({
         status: false,
-        message: `User doesn't exist`,
+        message: `Site doesn't exist`,
       });
     }
 
-    let updatedSite = await UserModel.findByIdAndUpdate(id, req.body, {
+    console.log(req.body);
+
+    let updatedSite = await SiteModal.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     })
-      .populate({
-        path: "landLords",
-        model: "Landlord",
-      })
-      .populate({
-        path: "investors.investorId",
-        model: "Investor",
-      })
-      .populate({
-        path: "createdBy",
-        select: "-password",
-        model: "User",
-      })
-      .exec();
 
     res.status(201).json({
       status: true,
       message: "Site updated successfully",
-      user: updatedSite,
+      site: updatedSite,
     });
   } catch (err) {
     res.status(500).json({

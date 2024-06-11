@@ -8,11 +8,12 @@ const {
     getOneSite,
     registerSite,
     updateSite
-    // updateLandlord,
+
 } = require('../controllers/SiteController')
 
 router.post('/register', registerSite) // Create investor
-router.post('/', getAllSites) // get all
-router.get('/:id', getOneSite) // get one
+router.post('/', tokenVerify, getAllSites) // get all
+router.patch('/update/:id', tokenVerify, updateSite) // get all
+router.get('/:id', tokenVerify, getOneSite) // get one
 
 module.exports = router

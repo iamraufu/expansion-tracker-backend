@@ -1,28 +1,24 @@
 const InvestorModel = require("../models/InvestorModel");
 const mongoose = require("mongoose");
 
-
 const generateCustomId = async () => {
   try {
     // Find the count of existing investors
     const count = await InvestorModel.countDocuments();
 
     // Generate the custom ID based on the count
-    const customId = `INV${String(count + 1).padStart(4, '0')}`;
+    const customId = `INV${String(count + 1).padStart(4, "0")}`;
 
     return customId;
   } catch (error) {
-    console.error('Error generating custom ID:', error);
+    console.error("Error generating custom ID:", error);
     throw error;
   }
 };
 
 // Register a new investor
 const registerInvestor = async (req, res) => {
-
-
   try {
-
     const { phone } = req.body;
     const investor = Boolean(await InvestorModel.findOne({ phone }));
 
@@ -31,7 +27,7 @@ const registerInvestor = async (req, res) => {
       const customId = await generateCustomId();
 
       console.log(customId);
-      
+
       // Create new investor with custom ID
       const newInvestor = await InvestorModel.create({ ...req.body, customId });
 
@@ -40,17 +36,13 @@ const registerInvestor = async (req, res) => {
         message: "Investor created successfully!",
         investor: newInvestor,
       });
-    }
-
-    else {
+    } else {
       return res.status(409).send({
         status: false,
         message: `User exist with ${phone}`,
       });
     }
-  }
-
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.send({
       status: false,
@@ -61,12 +53,9 @@ const registerInvestor = async (req, res) => {
 
 // GET all investors
 const getAllInvestors = async (req, res) => {
-
   try {
     await search(req, res);
-  }
-
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({
       status: false,
@@ -76,18 +65,15 @@ const getAllInvestors = async (req, res) => {
 };
 
 const search = async (req, res) => {
-
   const filter = req.body;
 
-  const items = await InvestorModel.find(filter)
-    .lean()
-    .populate({
-      path: "createdBy",
-      select: " -password",
-    })
-    // .populate({
-    //   path: "sites",
-    // });
+  const items = await InvestorModel.find(filter).lean().populate({
+    path: "createdBy",
+    select: " -password",
+  });
+  // .populate({
+  //   path: "sites",
+  // });
 
   const responseObject = {
     status: true,
@@ -96,9 +82,7 @@ const search = async (req, res) => {
 
   if (items.length) {
     return res.status(200).json(responseObject);
-  }
-
-  else {
+  } else {
     return res.status(401).json({
       status: false,
       message: "Nothing found",
@@ -109,7 +93,6 @@ const search = async (req, res) => {
 
 // GET investor by Id
 const getOneInvestor = async (req, res) => {
-
   const { id } = req.params;
 
   // console.log(id);
@@ -122,15 +105,13 @@ const getOneInvestor = async (req, res) => {
       });
     }
 
-    let foundInvestor = await InvestorModel.findById(id)
-      .lean()
-      .populate({
-        path: "createdBy",
-        select: " -password",
-      })
-      // .populate({
-      //   path: "sites",
-      // });
+    let foundInvestor = await InvestorModel.findById(id).lean().populate({
+      path: "createdBy",
+      select: " -password",
+    });
+    // .populate({
+    //   path: "sites",
+    // });
 
     foundInvestor = {
       ...foundInvestor,
@@ -147,9 +128,7 @@ const getOneInvestor = async (req, res) => {
       status: true,
       investor: foundInvestor,
     });
-  }
-
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({
       status: false,
@@ -159,19 +138,18 @@ const getOneInvestor = async (req, res) => {
 };
 // Update investor by Id
 const updateInvestor = async (req, res) => {
-
-  const { id } = req.params
+  const { id } = req.params;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({
         status: false,
-        message: `Investor Id incorrect`
-      })
+        message: `Investor Id incorrect`,
+      });
     }
 
-    const investor = await InvestorModel.findById(id)
-    const investorExist = Boolean(investor)
+    const investor = await InvestorModel.findById(id);
+    const investorExist = Boolean(investor);
 
     if (!investorExist) {
       return res.status(401).json({
@@ -180,39 +158,28 @@ const updateInvestor = async (req, res) => {
       });
     }
 
-    let updatedInvestor = await UserModel.findByIdAndUpdate
-      (
-        id, req.body,
-        {
-          new: true,
-          runValidators: true
-        }
-      ).populate({
-        path: "createdBy",
-        select: " -password",
-      })
-      .populate({
-        path: "sites",
-      });
+    let updatedInvestor = await InvestorModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.status(201).json({
       status: true,
       message: "Investor updated successfully",
-      user: updatedInvestor
-    })
-  }
-  catch (err) {
+      user: updatedInvestor,
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
       status: false,
-      message: `${err}`
-    })
+      message: `${err}`,
+    });
   }
-}
-
+};
 
 module.exports = {
   registerInvestor,
   getAllInvestors,
   getOneInvestor,
-  updateInvestor
+  updateInvestor,
 };

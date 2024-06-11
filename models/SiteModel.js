@@ -1,27 +1,54 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Define schema for document objects
+const documentSchema = new Schema({
+  url: { type: String, required: true },
+  status: { type: String, required: true },
+  fileType: { type: String, default: "" },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Define schema for picture objects
+const picturesSchema = new Schema({
+  url: { type: String, required: true },
+  fileType: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Define schema for site history
 const siteHistorySchema = new Schema({
   status: { type: String, required: true },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
 });
 
+// Define schema for investors
 const investorSchema = new Schema({
   investorId: { type: mongoose.Types.ObjectId, ref: "Investor" },
-  investmentBudget: { type: String, required: true },
+  investmentBudget: { type: Number, required: true },
   possibleInvestmentDate: { type: Date, required: true },
 });
 
+// Define schema for status details
+const statusDetailSchema = new Schema({
+  status: { type: String, required: true },
+  remarks: { type: String },
+  approvedBy: { type: String },
+  equipmentOptions: { type: [String] },
+  createdAt: { type: Date, require: true },
+  updatedAt: { type: Date, require: true },
+  openingDate: { type: Date, default: null },
+});
+
+
+// Define schema for the site
 const siteSchema = new Schema(
   {
     customId: { type: String, required: true },
-    sapCode: { type: String , default: ""},
-
+    sapCode: { type: String, default: "" },
     landlords: {
-      type: Array,
-      Of: mongoose.Types.ObjectId,
-      ref: "Landlord",
+      type: [{ type: mongoose.Types.ObjectId, ref: "Landlord" }],
       default: [],
     },
     investors: {
@@ -43,24 +70,21 @@ const siteSchema = new Schema(
     upazila: { type: String, required: true },
     address: { type: String, required: true },
     documents: {
-      type: [String],
+      type: [documentSchema],
       default: [],
-    }, // Array of URLs
-    pictures: {
-      type: [String],
-      default: [],
-    }, // Array of URLs
-    location: {
-      longitude: {
-        type: Number,
-      },
-      latitude: {
-        type: Number,
-      },
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
+    pictures: {
+      type: [picturesSchema],
+      default: [],
+    },
+    location: {
+      longitude: { type: Number },
+      latitude: { type: Number },
+    },
+    isDeleted: { type: Boolean, default: false },
+    statusDetails: {
+      type: [statusDetailSchema],
+      default: [],
     },
   },
   {
