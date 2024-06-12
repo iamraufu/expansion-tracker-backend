@@ -1,5 +1,7 @@
 const TaskModal = require("../models/TaskModel");
 const mongoose = require("mongoose");
+const moment = require('moment-timezone');
+
 
 const generateCustomId = async () => {
   try {
@@ -30,6 +32,9 @@ const search = async (req, res) => {
     .populate({
       path: "site",
     })
+    .populate({
+      path: "createdBy",
+    })
     .exec();
 
   const responseObject = {
@@ -49,13 +54,52 @@ const search = async (req, res) => {
 };
 
 // Register a new task
+// const addTask = async (req, res) => {
+//   try {
+//     // Generate custom ID
+//     const customId = await generateCustomId();
+
+//     // Create new task with custom ID
+//     const newTask = await TaskModal.create({ ...req.body, customId });
+
+
+//     console.log(newTask);
+
+//     // return res.status(201).send({
+//     //   status: true,
+//     //   message: "Task created successfully!",
+//     //   task: newTask,
+//     // });
+//   } catch (err) {
+//     console.log(err);
+//     res.send({
+//       status: false,
+//       message: `Error in registration : ${err}`,
+//     });
+//   }
+// };
+
+
+
+//Register a new task
 const addTask = async (req, res) => {
   try {
     // Generate custom ID
     const customId = await generateCustomId();
 
-    // Create new task with custom ID
-    const newTask = await TaskModal.create({ ...req.body, customId });
+    // Convert the startDateTime and endDateTime to Bangladeshi time
+    const startDateTime = moment.tz(req.body.startDateTime, "Asia/Dhaka").toDate();
+    const endDateTime = moment.tz(req.body.endDateTime, "Asia/Dhaka").toDate();
+
+    // Create new task with custom ID and converted dates
+    const newTask = await TaskModal.create({ 
+      ...req.body, 
+      customId,
+      startDateTime,
+      endDateTime
+    });
+
+    console.log(newTask);
 
     return res.status(201).send({
       status: true,
