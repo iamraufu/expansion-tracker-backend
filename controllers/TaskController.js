@@ -34,6 +34,7 @@ const search = async (req, res) => {
     })
     .populate({
       path: "createdBy",
+      populate: [{ path: "managers" }],
     })
     .exec();
 

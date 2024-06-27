@@ -29,6 +29,7 @@ const search = async (req, res) => {
     })
     .populate({
       path: "createdBy",
+      populate: [{ path: "managers" }],
       select: "-password",
     })
     .exec();
@@ -58,7 +59,9 @@ const registerSite = async (req, res) => {
     const { name } = req.body;
     const site = Boolean(await SiteModal.findOne({ name }));
 
-    if (!site) {
+    console.log(site);
+
+    if (true) {
       // Generate custom ID
       const customId = await generateCustomId();
 
