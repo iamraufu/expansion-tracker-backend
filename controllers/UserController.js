@@ -51,8 +51,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
       try {
             const { email, password } = req.body
-            const user = await UserModel.findOne({ email: email.trim() })
-            const userWithoutPassword = await UserModel.findOne({ email: email.trim() }).select(" -password")
+            const user = await UserModel.findOne({ email: email.trim() , isDeleted:false })
+            const userWithoutPassword = await UserModel.findOne({ email: email.trim() , isDeleted:false }).select(" -password")
             // .populate(
             //       {
             //             path: 'managers',
