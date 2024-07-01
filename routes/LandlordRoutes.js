@@ -7,11 +7,11 @@ const {
     registerLandlord,
     getAllLandlords,
     getOneLandlord,
-    // updateLandlord,
+    updateLandlord,
 } = require('../controllers/LandlordController')
 
 router.post('/register', registerLandlord) // Create investor
 router.post('/', getAllLandlords) // get all
-router.get('/:id', getOneLandlord) // get one
-
+router.get('/:id', getOneLandlord) 
+router.patch('/:id', updateLandlord) 
 module.exports = router

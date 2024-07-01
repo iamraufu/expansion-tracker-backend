@@ -155,18 +155,11 @@ const updateLandlord = async (req, res) => {
       });
     }
 
-    let updatedLandlord = await UserModel.findByIdAndUpdate(id, req.body, {
+    let updatedLandlord = await LandlordModel.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     })
-      .populate({
-        path: "createdBy",
-        select: " -password",
-      })
-      .populate({
-        path: "sites",
-      });
-
+    
     res.status(201).json({
       status: true,
       message: "Landlord updated successfully",

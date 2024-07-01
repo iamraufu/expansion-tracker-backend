@@ -2,6 +2,7 @@ const InvestorModel = require("../models/InvestorModel");
 const LandlordModel = require("../models/LandlordModel");
 const SiteModal = require("../models/SiteModel");
 const TaskModal = require("../models/TaskModel");
+const UserModel = require('../models/UserModel');
 const mongoose = require("mongoose");
 
 const investorAndLandlordData = async (req, res) => {
@@ -101,12 +102,9 @@ const checkOwnerTasks = async (req, res) => {
     const ownerType = req.params.type; // 'landlord' or 'investor'
 
     if (ownerType !== "landlord" && ownerType !== "investor") {
-      return res
-        .status(400)
-        .json({
-          message:
-            'Invalid owner type. Must be either "landlord" or "investor".',
-        });
+      return res.status(400).json({
+        message: 'Invalid owner type. Must be either "landlord" or "investor".',
+      });
     }
 
     const query = { isComplete: true, taskStatus: true };
@@ -117,36 +115,74 @@ const checkOwnerTasks = async (req, res) => {
 
     // Return true if task exists, otherwise false
     if (taskExists) {
-      return res
-        .status(200)
-        .json({
-          result: true,
-          status: true,
-          message: "successfully retrived data",
-        });
+      return res.status(200).json({
+        result: true,
+        status: true,
+        message: "successfully retrived data",
+      });
     } else {
-      return res
-        .status(200)
-        .json({
-          result: false,
-          status: true,
-          message: "successfully retrived data",
-        });
+      return res.status(200).json({
+        result: false,
+        status: true,
+        message: "successfully retrived data",
+      });
     }
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({
-        message: "Server error",
-        status: false,
-        message: `Server Error: ${error}`,
-      });
+    return res.status(500).json({
+      message: "Server error",
+      status: false,
+      message: `Server Error: ${error}`,
+    });
   }
 };
+
+const managerAssign = async (req, res) => {
+  const { userId, managerId } = req.body;
+
+  try {
+    // Find the user by userId
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Remove the user from previous managers' employees arrays
+    for (let prevManagerId of user.managers) {
+      const prevManager = await UserModel.findById(prevManagerId);
+      if (prevManager) {
+        prevManager.employees.pull(userId);
+        await prevManager.save();
+      }
+    }
+
+    // Clear the user's managers array
+    user.managers = [];
+
+    // Add the new manager to the user's managers array if it's not already present
+    if (!user.managers.includes(managerId)) {
+      user.managers.push(managerId);
+      await user.save();
+    }
+
+    // Add the user to the new manager's employees array if it's not already present
+    const manager = await UserModel.findById(managerId);
+    if (manager && !manager.employees.includes(userId)) {
+      manager.employees.push(userId);
+      await manager.save();
+    }
+
+    res.status(200).json({ message: 'Manager assigned successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 module.exports = {
   investorAndLandlordData,
   getOneSiteWithPartners,
   checkOwnerTasks,
+  managerAssign
 };

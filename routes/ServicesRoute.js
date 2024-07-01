@@ -6,13 +6,15 @@ const { tokenVerify } = require('../utilities/tokenVerify')
 const {
 investorAndLandlordData,
 getOneSiteWithPartners,
-checkOwnerTasks
+checkOwnerTasks,
+managerAssign
 } = require('../controllers/ServicesController')
 
 
-router.post('/partners', tokenVerify, investorAndLandlordData) // get all
-router.post('/site/:id', tokenVerify, getOneSiteWithPartners) // get all
-router.get('/task/:id/:type', tokenVerify, checkOwnerTasks) // get all
+router.post('/partners', tokenVerify, investorAndLandlordData) 
+router.post('/site/:id', tokenVerify, getOneSiteWithPartners) 
+router.get('/task/:id/:type', tokenVerify, checkOwnerTasks) 
+router.patch('/managerAssign', tokenVerify, managerAssign) 
 
 
 module.exports = router
