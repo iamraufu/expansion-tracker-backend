@@ -2,12 +2,92 @@ const InvestorModel = require("../models/InvestorModel");
 const LandlordModel = require("../models/LandlordModel");
 const SiteModal = require("../models/SiteModel");
 const TaskModal = require("../models/TaskModel");
-const UserModel = require('../models/UserModel');
+const UserModel = require("../models/UserModel");
 const mongoose = require("mongoose");
 
-const investorAndLandlordData = async (req, res) => {
-  // console.log(req.body);
+const levels = [
+  {
+    level: 1,
+    status: "site found",
+  },
+  {
+    level: 2,
+    status: "site negotiation",
+  },
+  {
+    level: 3,
+    status: "investor and site confirmation",
+  },
+  {
+    level: 4,
+    status: "feasibility study",
+  },
+  {
+    level: 5,
+    status: "RMIA validation",
+  },
 
+  {
+    level: 6,
+    status: "GMD approval",
+  },
+  {
+    level: 7,
+    status: "premises agreement",
+  },
+  {
+    level: 8,
+    status: "docs collected",
+  },
+
+  {
+    level: 9,
+    status: "layout approved",
+  },
+  {
+    level: 10,
+    status: "franchise agreement",
+  },
+
+  {
+    level: 11,
+    status: "civil work",
+  },
+  {
+    level: 12,
+    status: "equipment order",
+  },
+  {
+    level: 13,
+    status: "equipment installation",
+  },
+  {
+    level: 14,
+    status: "hr ready",
+  },
+  {
+    level: 15,
+    status: "product receiving",
+  },
+  {
+    level: 16,
+    status: "merchandising",
+  },
+  {
+    level: 17,
+    status: "branding",
+  },
+  {
+    level: 18,
+    status: "inauguration",
+  },
+  {
+    level: 19,
+    status: "site complete",
+  },
+];
+
+const investorAndLandlordData = async (req, res) => {
   const filter = req.body;
 
   try {
@@ -144,7 +224,7 @@ const managerAssign = async (req, res) => {
     // Find the user by userId
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Remove the user from previous managers' employees arrays
@@ -172,17 +252,106 @@ const managerAssign = async (req, res) => {
       await manager.save();
     }
 
-    res.status(200).json({ message: 'Manager assigned successfully' });
+    res.status(200).json({ message: "Manager assigned successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
+const getStatusCounts = async (req, res) => {
+
+  // console.log(req.body);
+
+  let filter = {
+    isDeleted: false,
+    status: { $ne: "site complete" }
+  }
+
+
+  let filter2 = {
+    isDeleted: false,
+    status: { $nin: ["site found", "site negotiation"] }
+  }
+
+  let investorFilter = {
+    isDeleted: false,
+  }
+
+
+  if(req?.body?.createdBy?.length > 0){
+    const createdByArray = req?.body?.createdBy?.map(id => new mongoose.Types.ObjectId(id));
+    // console.log(createdByArray);
+    filter.createdBy = { $in: createdByArray };
+    filter2.createdBy = { $in: createdByArray };
+    investorFilter.createdBy = { $in: createdByArray };
+  }
+
+
+
+  // console.log("filter : ");
+  // console.log({filter});
+
+  try {
+    const result = await SiteModal.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          status: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    const allSite = await SiteModal.find(filter)
+    const aggreedInvestors = await SiteModal.countDocuments(filter2)
+    const allIvestors = await InvestorModel.countDocuments(investorFilter)
+
+    // console.log(result);
+
+    // Create a map of status to counts
+    const statusCounts = result.reduce((acc, curr) => {
+      acc[curr.status] = curr.count;
+      return acc;
+    }, {});
+
+    // Calculate the final counts based on levels
+    const levelCounts = levels.map((levelObj, index) => {
+      let totalCount = 0;
+      for (let i = index; i < levels.length; i++) {
+        totalCount += statusCounts[levels[i].status] || 0;
+      }
+      return {
+        status: levelObj.status,
+        level: levelObj.level,
+        count: totalCount,
+      };
+    });
+
+    // console.log({levelCounts});
+
+    res.status(200).json({ data: result, allSites:allSite , funnelData:levelCounts, aggreedInvestors: aggreedInvestors, allIvestors:allIvestors, message: "data found", status: true });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: error.message, message: "data npt found", status: false });
+  }
+};
 
 module.exports = {
   investorAndLandlordData,
   getOneSiteWithPartners,
   checkOwnerTasks,
-  managerAssign
+  managerAssign,
+  getStatusCounts,
 };

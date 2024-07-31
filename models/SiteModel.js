@@ -69,6 +69,7 @@ const siteSchema = new Schema(
     district: { type: String, required: true },
     upazila: { type: String, required: true },
     address: { type: String, required: true },
+    feasibilityDoneByOperations: { type: Boolean, default: false },
     documents: {
       type: [documentSchema],
       default: [],

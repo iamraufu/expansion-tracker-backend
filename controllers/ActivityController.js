@@ -24,6 +24,7 @@ const getAllActivityLog = async (req, res) => {
       status: true,
       logs: allActivity,
     });
+    
   } catch (err) {
     res.status(500).json({ status:false, message: err.message });
   }

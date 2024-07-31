@@ -7,7 +7,8 @@ const {
 investorAndLandlordData,
 getOneSiteWithPartners,
 checkOwnerTasks,
-managerAssign
+managerAssign,
+getStatusCounts
 } = require('../controllers/ServicesController')
 
 
@@ -15,6 +16,7 @@ router.post('/partners', tokenVerify, investorAndLandlordData)
 router.post('/site/:id', tokenVerify, getOneSiteWithPartners) 
 router.get('/task/:id/:type', tokenVerify, checkOwnerTasks) 
 router.patch('/managerAssign', tokenVerify, managerAssign) 
+router.post('/statusCount', tokenVerify, getStatusCounts) 
 
 
 module.exports = router
