@@ -348,10 +348,16 @@ const getStatusCounts = async (req, res) => {
   }
 };
 
+
+const createSiteWithFeasibilty = async (req,res) => {
+  console.log(req.body);
+}
+
 module.exports = {
   investorAndLandlordData,
   getOneSiteWithPartners,
   checkOwnerTasks,
   managerAssign,
   getStatusCounts,
+  createSiteWithFeasibilty
 };

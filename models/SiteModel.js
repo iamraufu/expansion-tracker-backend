@@ -87,6 +87,10 @@ const siteSchema = new Schema(
       type: [statusDetailSchema],
       default: [],
     },
+    feasibility: {
+      type: Object,
+      default: {}
+    },
   },
   {
     timestamps: true,

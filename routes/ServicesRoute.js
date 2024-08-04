@@ -8,7 +8,8 @@ investorAndLandlordData,
 getOneSiteWithPartners,
 checkOwnerTasks,
 managerAssign,
-getStatusCounts
+getStatusCounts,
+createSiteWithFeasibilty
 } = require('../controllers/ServicesController')
 
 
@@ -17,6 +18,7 @@ router.post('/site/:id', tokenVerify, getOneSiteWithPartners)
 router.get('/task/:id/:type', tokenVerify, checkOwnerTasks) 
 router.patch('/managerAssign', tokenVerify, managerAssign) 
 router.post('/statusCount', tokenVerify, getStatusCounts) 
+// router.post('/createSiteWithFeasibilty', tokenVerify, createSiteWithFeasibilty) 
 
 
 module.exports = router
