@@ -67,7 +67,7 @@ const getAllLandlords = async (req, res) => {
 const search = async (req, res) => {
   const filter = req.body;
 
-  const items = await LandlordModel.find(filter).lean().populate({
+  const items = await LandlordModel.find({...filter, isDeleted: false}).lean().populate({
     path: "createdBy",
     select: " -password",
   });

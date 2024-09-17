@@ -19,7 +19,7 @@ const generateCustomId = async () => {
 const search = async (req, res) => {
   const filter = req.body;
 
-  const items = await SiteModal.find(filter)
+  const items = await SiteModal.find({...filter, isDeleted: false})
     .lean()
     .populate({
       path: "landlords",

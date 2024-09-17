@@ -67,7 +67,7 @@ const getAllInvestors = async (req, res) => {
 const search = async (req, res) => {
   const filter = req.body;
 
-  const items = await InvestorModel.find(filter).lean().populate({
+  const items = await InvestorModel.find({...filter, isDeleted: false}).lean().populate({
     path: "createdBy",
     select: " -password",
   });

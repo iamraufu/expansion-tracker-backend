@@ -91,17 +91,17 @@ const investorAndLandlordData = async (req, res) => {
   const filter = req.body;
 
   try {
-    const investors = await InvestorModel.find(filter).populate({
+    const investors = await InvestorModel.find({...filter, isDeleted: false}).populate({
       path: "createdBy",
       populate: [{ path: "managers" }],
       // select: "name",
     });
-    const landlords = await LandlordModel.find(filter).populate({
+    const landlords = await LandlordModel.find({...filter, isDeleted: false}).populate({
       path: "createdBy",
       populate: [{ path: "managers" }],
       // select: "name",
     });
-    const sites = await SiteModal.find(filter);
+    const sites = await SiteModal.find({...filter, isDeleted: false});
 
     const combinedData = [...investors, ...landlords];
 
