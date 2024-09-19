@@ -114,6 +114,7 @@ const users = async (req, res) => {
             await search(req, res)
       }
       catch (err) {
+            console.log(err);
             res.status(500).json({
                   status: false,
                   message: `${err}`
@@ -276,29 +277,34 @@ const search = async (req, res) => {
 
       const filter = req.body
 
+      console.log({filter});
+
       // const pageSize = +req.body.pageSize || 10;
       // const currentPage = +req.body.currentPage || 1;
       // const sortBy = req.body.sortBy || '_id'; // _id or description or code or po or etc.
       // const sortOrder = req.body.sortOrder || 'desc'; // asc or desc
 
       // const totalItems = await UserModel.find(filter).countDocuments();
-      const items = await UserModel.find(filter)
+      const items = await UserModel.find({...filter})
             // .skip((pageSize * (currentPage - 1)))
             // .limit(pageSize)
             // .sort({ [sortBy]: sortOrder })
             .select(" -password")
-            .lean()
+            // .lean()
             .populate(
                   {
                         path: 'managers',
                         select: " -password"
                   }
-            ).populate(
+            )
+            .populate(
                   {
                         path: 'employees',
                         select: " -password"
                   }
             )
+      
+      console.log({items});
 
       const responseObject = {
             status: true,
