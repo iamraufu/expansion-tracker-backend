@@ -285,7 +285,7 @@ const search = async (req, res) => {
       // const sortOrder = req.body.sortOrder || 'desc'; // asc or desc
 
       // const totalItems = await UserModel.find(filter).countDocuments();
-      const items = await UserModel.find({...filter})
+      const items = await UserModel.find({...filter, isDeleted: false})
             // .skip((pageSize * (currentPage - 1)))
             // .limit(pageSize)
             // .sort({ [sortBy]: sortOrder })
