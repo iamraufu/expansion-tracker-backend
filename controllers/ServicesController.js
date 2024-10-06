@@ -265,7 +265,7 @@ const getStatusCounts = async (req, res) => {
 
   let filter = {
     isDeleted: false,
-    status: { $ne: "site complete" }
+    // status: { $ne: "site complete" }
   }
 
 
@@ -301,6 +301,7 @@ const getStatusCounts = async (req, res) => {
         $group: {
           _id: "$status",
           count: { $sum: 1 },
+          sites: { $push: "$$ROOT" }
         },
       },
       {
@@ -308,6 +309,7 @@ const getStatusCounts = async (req, res) => {
           _id: 0,
           status: "$_id",
           count: 1,
+          sites: 1
         },
       },
     ]);
@@ -317,25 +319,53 @@ const getStatusCounts = async (req, res) => {
     const allIvestors = await InvestorModel.countDocuments(investorFilter)
 
     // console.log(result);
+    // // Create a map of status to counts
+    // const statusCounts = result.reduce((acc, curr) => {
+    //   acc[curr.status] = curr.count;
+    //   return acc;
+    // }, {});
 
-    // Create a map of status to counts
-    const statusCounts = result.reduce((acc, curr) => {
-      acc[curr.status] = curr.count;
-      return acc;
-    }, {});
+       // Create a map of status to counts and sites
+       const statusData = result.reduce((acc, curr) => {
+        // console.log(curr);
+        acc[curr.status] = {
+          count: curr.count,
+          sites: curr.sites  // Store the array of site objects
+        };
+        return acc;
+      }, {})
 
     // Calculate the final counts based on levels
-    const levelCounts = levels.map((levelObj, index) => {
-      let totalCount = 0;
-      for (let i = index; i < levels.length; i++) {
-        totalCount += statusCounts[levels[i].status] || 0;
-      }
-      return {
-        status: levelObj.status,
-        level: levelObj.level,
-        count: totalCount,
-      };
-    });
+    // const levelCounts = levels.map((levelObj, index) => {
+    //   let totalCount = 0;
+    //   for (let i = index; i < levels.length; i++) {
+    //     totalCount += statusCounts[levels[i].status] || 0;
+    //   }
+    //   return {
+    //     status: levelObj.status,
+    //     level: levelObj.level,
+    //     count: totalCount,
+    //   };
+    // });
+
+        // Calculate the final counts based on levels, including site data
+        const levelCounts = levels.map((levelObj, index) => {
+          let totalCount = 0;
+          let combinedSites = [];
+    
+          for (let i = index; i < levels.length; i++) {
+            totalCount += statusData[levels[i].status]?.count || 0;
+            combinedSites = combinedSites.concat(statusData[levels[i].status]?.sites || []);
+          }
+    
+          return {
+            status: levelObj.status,
+            level: levelObj.level,
+            count: totalCount,
+            sites: combinedSites,  // Include the sites array in the response
+          };
+        });
+    
 
     // console.log({levelCounts});
 
