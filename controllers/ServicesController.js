@@ -267,6 +267,10 @@ const getStatusCounts = async (req, res) => {
     isDeleted: false,
     // status: { $ne: "site complete" }
   }
+  let filterFunnel = {
+    isDeleted: false,
+    status: { $ne: "site complete" }
+  }
 
 
   let filter2 = {
@@ -313,6 +317,26 @@ const getStatusCounts = async (req, res) => {
         },
       },
     ]);
+    const result2 = await SiteModal.aggregate([
+      {
+        $match: filterFunnel,
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+          sites: { $push: "$$ROOT" }
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          status: "$_id",
+          count: 1,
+          sites: 1
+        },
+      },
+    ]);
 
     const allSite = await SiteModal.find(filter)
     const aggreedInvestors = await SiteModal.countDocuments(filter2)
@@ -327,6 +351,14 @@ const getStatusCounts = async (req, res) => {
 
        // Create a map of status to counts and sites
        const statusData = result.reduce((acc, curr) => {
+        // console.log(curr);
+        acc[curr.status] = {
+          count: curr.count,
+          sites: curr.sites  // Store the array of site objects
+        };
+        return acc;
+      }, {})
+       const statusData2 = result2.reduce((acc, curr) => {
         // console.log(curr);
         acc[curr.status] = {
           count: curr.count,
@@ -365,11 +397,27 @@ const getStatusCounts = async (req, res) => {
             sites: combinedSites,  // Include the sites array in the response
           };
         });
+        const levelCounts2 = levels.map((levelObj, index) => {
+          let totalCount = 0;
+          let combinedSites = [];
+    
+          for (let i = index; i < levels.length; i++) {
+            totalCount += statusData2[levels[i].status]?.count || 0;
+            combinedSites = combinedSites.concat(statusData2[levels[i].status]?.sites || []);
+          }
+    
+          return {
+            status: levelObj.status,
+            level: levelObj.level,
+            count: totalCount,
+            sites: combinedSites,  // Include the sites array in the response
+          };
+        });
     
 
     // console.log({levelCounts});
 
-    res.status(200).json({ data: result, allSites:allSite , funnelData:levelCounts, aggreedInvestors: aggreedInvestors, allIvestors:allIvestors, message: "data found", status: true });
+    res.status(200).json({ data: result, allSites:allSite , funnelData:levelCounts,onlyFunnelData:levelCounts2, aggreedInvestors: aggreedInvestors, allIvestors:allIvestors, message: "data found", status: true });
   } catch (error) {
     console.log(error);
     res
