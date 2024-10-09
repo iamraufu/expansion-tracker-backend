@@ -282,12 +282,12 @@ const getStatusCounts = async (req, res) => {
     isDeleted: false,
   }
 
-
   if(req?.body?.createdBy?.length > 0){
     const createdByArray = req?.body?.createdBy?.map(id => new mongoose.Types.ObjectId(id));
     // console.log(createdByArray);
     filter.createdBy = { $in: createdByArray };
     filter2.createdBy = { $in: createdByArray };
+    filterFunnel.createdBy = {$in: createdByArray}
     investorFilter.createdBy = { $in: createdByArray };
   }
 
