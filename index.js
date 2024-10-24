@@ -8,6 +8,7 @@ const InvestorRoutes = require('./routes/InvestorRoutes')
 const LandlordRoutes = require('./routes/LandlordRoutes')
 const ServicesRoute = require('./routes/ServicesRoute')
 const SiteRoutes = require('./routes/SiteRoutes')
+const BenchmarkOutletRoutes = require('./routes/BenchmarkOutletRoutes')
 const AcitivityRoutes = require("./routes/ActivityRoutes");
 const TaskRoutes = require("./routes/TaskRoutes");
 
@@ -36,6 +37,7 @@ app.use("/api/services", ServicesRoute) // services API
 app.use("/api/site", SiteRoutes) // site API
 app.use("/api/activity", AcitivityRoutes ) // activity API
 app.use("/api/tasks", TaskRoutes ) // Tasks API
+app.use("/api/benchmarkOutlets", BenchmarkOutletRoutes ) 
 
 connectDB()
 

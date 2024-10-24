@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const FeasibiltySchema = new mongoose.Schema(
   {
+    clusterCode: {
+      type: Object,
+      default: "",
+    },
     scroreBoard: {
       type: Object,
       required: true
@@ -30,4 +34,4 @@ const FeasibiltySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Feasibilty", FeasibiltySchema);;
+module.exports = mongoose.model("Feasibilty", FeasibiltySchema);
