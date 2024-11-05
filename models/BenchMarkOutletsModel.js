@@ -10,7 +10,35 @@ const BenchmarkOutletSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    district: {
+      type: String,
+      default: ""
+    },
+    division: {
+      type: String,
+      default: ""
+    },
+    thana: {
+      type: String,
+      default: ""
+    },
+    populationDensity: {
+      type: String,
+      default: ""
+    },
+    incomeLevel: {
+      type: String,
+      default: ""
+    },
+    sqftRange: {
+      type: String,
+      default: ""
+    },
     clusterCode: {
+        type: String,
+        default: "",
+    },
+    locationType: {
         type: String,
         default: "",
     },
@@ -22,21 +50,17 @@ const BenchmarkOutletSchema = new mongoose.Schema(
       type: Number,
       default: null
     },
-    avgMonthlyProfit: {
+    footFall: {
       type: Number,
       default: null
     },
-    district: {
-      type: String,
-      default: ""
+    sqft: {
+      type: Number,
+      default: null
     },
-    division: {
+    pnp: {
       type: String,
-      default: ""
-    },
-    address: {
-      type: String,
-      default: ""
+      default: null
     },
   },
   {
