@@ -38,6 +38,10 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    profession_nature: {
+      type: String,
+      default: ""
+    },
     education: {
       type: String,
       required: true
