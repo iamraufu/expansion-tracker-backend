@@ -39,6 +39,7 @@ app.use("/api/activity", AcitivityRoutes ) // activity API
 app.use("/api/tasks", TaskRoutes ) // Tasks API
 app.use("/api/benchmarkOutlets", BenchmarkOutletRoutes ) 
 
+
 connectDB()
 
 app.listen(port, () => {
