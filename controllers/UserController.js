@@ -333,11 +333,46 @@ const alive = async (req,res) => {
       })
 }
 
+
+const changePassword = async (req, res) => {
+      try {
+          const { userId, newPassword } = req.body;
+  
+          // Find the user by ID
+          const user = await UserModel.findById(userId);
+          if (!user) {
+              return res.status(404).send({
+                  status: false,
+                  message: "User not found."
+              });
+          }
+  
+          // Hash the new password
+          const salt = await bcrypt.genSalt(10);
+          const newPasswordHash = await bcrypt.hash(newPassword, salt);
+  
+          // Update the user's password
+          user.password = newPasswordHash;
+          await user.save();
+  
+          return res.status(200).send({
+              status: true,
+              message: "Password updated successfully."
+          });
+      } catch (err) {
+          return res.status(500).send({
+              status: false,
+              message: `Error updating password: ${err}`
+          });
+      }
+  };
+
 module.exports = {
       register,
       login,
       users,
       user,
       update,
-      alive
+      alive,
+      changePassword
 }
